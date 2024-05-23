@@ -1,0 +1,70 @@
+#include <stdio.h>
+
+char processID[10];
+int n,arrivaltime[10]= {0} , bursttime[10]= {0} , completiontime[10]= {0} , TAT[10]= {0} , Waitingtime[10]= {0} ;
+float avgTAT = 0, avgWaitingtime = 0;
+
+void main(){
+printf("Enter the number of processes:");
+scanf("%d", &n);
+
+printf("\nEnter the process IDs:");
+for (int i = 0; i < n; i++) {
+    scanf(" %c", &processID[i]);
+}
+
+printf("Enter the arrival times:");
+for (int i = 0; i < n; i++) {
+    scanf("%d", &arrivaltime[i]);
+}
+
+printf("Enter the burst times:");
+for (int i = 0; i < n; i++) {
+    scanf("%d", &bursttime[i]);
+}
+
+Completiontime(arrivaltime,bursttime);
+TATa(completiontime,arrivaltime);
+Waitingtimea(TAT,bursttime);
+
+printf("\nProcess\t Arrival Time\t Burst Time\t Completion Time\t Turnaround Time\t Waiting Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("%c\t\t%d\t\t%d\t\t%d\t\t\t%d\t\t\t%d\n", processID[i], arrivaltime[i], bursttime[i], completiontime[i], TAT[i], Waitingtime[i]);
+        avgTAT += TAT[i];
+        avgWaitingtime += Waitingtime[i];
+    }
+
+
+    avgTAT /= n;
+    avgWaitingtime /= n;
+    printf("\nAverage Turnaround Time: %.2f", avgTAT);
+    printf("\nAverage Waiting Time: %.2f\n", avgWaitingtime);
+
+}
+
+void Completiontime(int arrivaltime[] ,int bursttime[]){
+for(int i=0;i<n;i++){
+    if(i==0){
+        completiontime[0]=bursttime[0];
+    }
+    else if(arrivaltime[i]<completiontime[i-1]){
+        completiontime[i]=completiontime[i-1]+bursttime[i];
+    }
+    else{
+        completiontime[i] = completiontime[i-1]+bursttime[i]+(arrivaltime[i]-completiontime[i-1]);
+    }
+}
+}
+
+void TATa(int completiontime[] , int arrivaltime[]){
+for(int i=0;i<n;i++){
+    TAT[i] = completiontime[i]-arrivaltime[i];
+}
+}
+
+void Waitingtimea(int TAT[] , int bursttime[]){
+for(int i=0;i<n;i++){
+    Waitingtime[i] = TAT[i]-bursttime[i];
+}
+}
+
