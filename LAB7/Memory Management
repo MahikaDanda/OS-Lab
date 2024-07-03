@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 25
+
+void firstFit(int nb, int nf, int b[], int f[]) {
+    int bf[MAX] = {0};
+    int ff[MAX] = {0};
+    int i, j;
+
+    for (i = 0; i < nf; i++) {
+        for (j = 0; j < nb; j++) {
+            if (bf[j] == 0 && b[j] >= f[i]) {
+                ff[i] = j;
+                bf[j] = 1; // Mark block j as allocated
+                break;
+            }
+        }
+    }
+
+    printf("\nFile_no:\tFile_size :\tBlock_no:\tBlock_size:");
+    for (i = 0; i < nf; i++) {
+        if (bf[ff[i]] == 1) // Only print if file i is allocated to a block
+            printf("\n%d\t\t%d\t\t%d\t\t%d", i + 1, f[i], ff[i] + 1, b[ff[i]]);
+    }
+}
+
+void bestFit(int nb, int nf, int b[], int f[]) {
+    int bf[MAX] = {0};
+    int ff[MAX] = {0};
+    int i, j, best;
+
+    for (i = 0; i < nf; i++) {
+        best = -1;
+        for (j = 0; j < nb; j++) {
+            if (bf[j] == 0 && b[j] >= f[i]) {
+                if (best == -1 || b[j] < b[best])
+                    best = j;
+            }
+        }
+        if (best != -1) {
+            ff[i] = best;
+            bf[best] = 1; // Mark block best as allocated
+        }
+    }
+
+    printf("\nFile No\tFile Size \tBlock No\tBlock Size");
+    for (i = 0; i < nf; i++) {
+        if (bf[ff[i]] == 1) // Only print if file i is allocated to a block
+            printf("\n%d\t\t%d\t\t%d\t\t%d", i + 1, f[i], ff[i] + 1, b[ff[i]]);
+    }
+}
+
+void worstFit(int nb, int nf, int b[], int f[]) {
+    int bf[MAX] = {0};
+    int ff[MAX] = {0};
+    int i, j, worst;
+
+    for (i = 0; i < nf; i++) {
+        worst = -1;
+        for (j = 0; j < nb; j++) {
+            if (bf[j] == 0 && b[j] >= f[i]) {
+                if (worst == -1 || b[j] > b[worst])
+                    worst = j;
+            }
+        }
+        if (worst != -1) {
+            ff[i] = worst;
+            bf[worst] = 1; // Mark block worst as allocated
+        }
+    }
+
+    printf("\nFile_no:\tFile_size :\tBlock_no:\tBlock_size:");
+    for (i = 0; i < nf; i++) {
+        if (bf[ff[i]] == 1) // Only print if file i is allocated to a block
+            printf("\n%d\t\t%d\t\t%d\t\t%d", i + 1, f[i], ff[i] + 1, b[ff[i]]);
+    }
+}
+
+int main() {
+    int b[MAX], f[MAX], nb, nf, choice;
+
+    printf("\n\tMemory Management Scheme");
+    printf("\nEnter the number of blocks:");
+    scanf("%d", &nb);
+    printf("Enter the number of files:");
+    scanf("%d", &nf);
+    printf("\nEnter the size of the blocks:\n");
+    for (int i = 0; i < nb; i++) {
+        printf("Block %d:", i + 1);
+        scanf("%d", &b[i]);
+    }
+    printf("Enter the size of the files:\n");
+    for (int i = 0; i < nf; i++) {
+        printf("File %d:", i + 1);
+        scanf("%d", &f[i]);
+    }
+
+    do {
+        printf("\n1. First Fit\n2. Best Fit\n3. Worst Fit\n4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("\n\tMemory Management Scheme - First Fit\n");
+                firstFit(nb, nf, b, f);
+                break;
+            case 2:
+                printf("\n\tMemory Management Scheme - Best Fit\n");
+                bestFit(nb, nf, b, f);
+                break;
+            case 3:
+                printf("\n\tMemory Management Scheme - Worst Fit\n");
+                worstFit(nb, nf, b, f);
+                break;
+            case 4:
+                printf("\nExiting...\n");
+                break;
+            default:
+                printf("\nInvalid choice.\n");
+                break;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
